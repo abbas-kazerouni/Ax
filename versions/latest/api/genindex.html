@@ -149,6 +149,11 @@ src="/js/documentation_options.js">
 </li>
 <li><a href="plot.html#ax.plot.helper.arm_name_to_tuple">arm_name_to_tuple() (in module ax.plot.helper)</a>
 </li>
+<li><a href="core.html#ax.core.generator_run.GeneratorRun.arm_signatures">arm_signatures() (ax.core.generator_run.GeneratorRun property)</a>
+<ul>
+<li><a href="ax.html#ax.GeneratorRun.arm_signatures">(ax.GeneratorRun property)</a>
+</li>
+</ul></li>
 <li><a href="storage.html#ax.storage.json_store.encoders.arm_to_dict">arm_to_dict() (in module ax.storage.json_store.encoders)</a>
 </li>
 <li><a href="storage.html#ax.storage.sqa_store.encoder.Encoder.arm_to_sqa">arm_to_sqa() (ax.storage.sqa_store.encoder.Encoder method)</a>
@@ -306,10 +311,10 @@ src="/js/documentation_options.js">
 </li>
 <li><a href="metrics.html#module-ax.metrics.hartmann6">ax.metrics.hartmann6 (module)</a>
 </li>
-<li><a href="metrics.html#module-ax.metrics.l2norm">ax.metrics.l2norm (module)</a>
-</li>
 </ul></td>
 <td style="width: 33%; vertical-align: top;"><ul>
+<li><a href="metrics.html#module-ax.metrics.l2norm">ax.metrics.l2norm (module)</a>
+</li>
 <li><a href="metrics.html#module-ax.metrics.noisy_function">ax.metrics.noisy_function (module)</a>
 </li>
 <li><a href="modelbridge.html#module-ax.modelbridge">ax.modelbridge (module)</a>
@@ -650,6 +655,13 @@ src="/js/documentation_options.js">
 </li>
 <li><a href="core.html#ax.core.base_trial.TrialStatus.CANDIDATE">CANDIDATE (ax.core.base_trial.TrialStatus attribute)</a>
 </li>
+<li><a href="storage.html#ax.storage.sqa_store.sqa_classes.SQAGeneratorRun.candidate_metadata_by_arm_signature">candidate_metadata_by_arm_signature (ax.storage.sqa_store.sqa_classes.SQAGeneratorRun attribute)</a>
+</li>
+<li><a href="core.html#ax.core.generator_run.GeneratorRun.candidate_metadata_by_arm_signature">candidate_metadata_by_arm_signature() (ax.core.generator_run.GeneratorRun property)</a>
+<ul>
+<li><a href="ax.html#ax.GeneratorRun.candidate_metadata_by_arm_signature">(ax.GeneratorRun property)</a>
+</li>
+</ul></li>
 <li><a href="storage.html#ax.storage.sqa_store.sqa_classes.SQAMetric.canonical_name">canonical_name (ax.storage.sqa_store.sqa_classes.SQAMetric attribute)</a>
 </li>
 <li><a href="modelbridge.html#ax.modelbridge.transforms.cap_parameter.CapParameter">CapParameter (class in ax.modelbridge.transforms.cap_parameter)</a>
@@ -792,6 +804,8 @@ src="/js/documentation_options.js">
 </li>
 <li><a href="utils.html#ax.utils.tutorials.cnn_utils.CNN">CNN (class in ax.utils.tutorials.cnn_utils)</a>
 </li>
+</ul></td>
+<td style="width: 33%; vertical-align: top;"><ul>
 <li><a href="plot.html#ax.plot.color.COLORS">COLORS (class in ax.plot.color)</a>
 </li>
 <li><a href="core.html#ax.core.data.Data.column_data_types">column_data_types() (ax.core.data.Data static method)</a>
@@ -799,8 +813,6 @@ src="/js/documentation_options.js">
 <li><a href="ax.html#ax.Data.column_data_types">(ax.Data static method)</a>
 </li>
 </ul></li>
-</ul></td>
-<td style="width: 33%; vertical-align: top;"><ul>
 <li><a href="ax.html#ax.ComparisonOp">ComparisonOp (class in ax)</a>
 <ul>
 <li><a href="core.html#ax.core.types.ComparisonOp">(class in ax.core.types)</a>
@@ -1015,10 +1027,10 @@ src="/js/documentation_options.js">
 </ul></li>
 <li><a href="core.html#ax.core.multi_type_experiment.MultiTypeExperiment.default_trials">default_trials() (ax.core.multi_type_experiment.MultiTypeExperiment property)</a>
 </li>
-</ul></td>
-<td style="width: 33%; vertical-align: top;"><ul>
 <li><a href="storage.html#ax.storage.sqa_store.sqa_classes.SQATrial.deployed_name">deployed_name (ax.storage.sqa_store.sqa_classes.SQATrial attribute)</a>
 </li>
+</ul></td>
+<td style="width: 33%; vertical-align: top;"><ul>
 <li><a href="core.html#ax.core.base_trial.BaseTrial.deployed_name">deployed_name() (ax.core.base_trial.BaseTrial property)</a>
 </li>
 <li><a href="modelbridge.html#ax.modelbridge.transforms.derelativize.Derelativize">Derelativize (class in ax.modelbridge.transforms.derelativize)</a>
@@ -1034,6 +1046,8 @@ src="/js/documentation_options.js">
 <li><a href="storage.html#ax.storage.sqa_store.sqa_classes.SQAExperiment.description">(ax.storage.sqa_store.sqa_classes.SQAExperiment attribute)</a>
 </li>
 </ul></li>
+<li><a href="models.html#ax.models.base.Model.deserialize_state">deserialize_state() (ax.models.base.Model class method)</a>
+</li>
 <li><a href="models.html#ax.models.torch.botorch.BotorchModel.device">device (ax.models.torch.botorch.BotorchModel attribute)</a>
 <ul>
 <li><a href="models.html#ax.models.torch_base.TorchModel.device">(ax.models.torch_base.TorchModel attribute)</a>
@@ -2275,8 +2289,18 @@ src="/js/documentation_options.js">
 <li><a href="modelbridge.html#ax.modelbridge.generation_strategy.GenerationStrategy.model">(ax.modelbridge.generation_strategy.GenerationStrategy property)</a>
 </li>
 </ul></li>
-<li><a href="modelbridge.html#ax.modelbridge.registry.ModelSetup.model_class">model_class() (ax.modelbridge.registry.ModelSetup property)</a>
+<li><a href="modelbridge.html#ax.modelbridge.registry.Models.model_bridge_class">model_bridge_class() (ax.modelbridge.registry.Models property)</a>
+<ul>
+<li><a href="ax.html#ax.Models.model_bridge_class">(ax.Models property)</a>
 </li>
+</ul></li>
+<li><a href="modelbridge.html#ax.modelbridge.registry.Models.model_class">model_class() (ax.modelbridge.registry.Models property)</a>
+<ul>
+<li><a href="modelbridge.html#ax.modelbridge.registry.ModelSetup.model_class">(ax.modelbridge.registry.ModelSetup property)</a>
+</li>
+<li><a href="ax.html#ax.Models.model_class">(ax.Models property)</a>
+</li>
+</ul></li>
 <li><a href="modelbridge.html#ax.modelbridge.generation_strategy.GenerationStep.model_gen_kwargs">model_gen_kwargs() (ax.modelbridge.generation_strategy.GenerationStep property)</a>
 </li>
 <li><a href="storage.html#ax.storage.sqa_store.sqa_classes.SQAGeneratorRun.model_key">model_key (ax.storage.sqa_store.sqa_classes.SQAGeneratorRun attribute)</a>
@@ -3063,6 +3087,8 @@ src="/js/documentation_options.js">
 </li>
 <li><a href="core.html#ax.core.observation.separate_observations">separate_observations() (in module ax.core.observation)</a>
 </li>
+<li><a href="models.html#ax.models.base.Model.serialize_state">serialize_state() (ax.models.base.Model class method)</a>
+</li>
 <li><a href="storage.html#ax.storage.sqa_store.db.session_scope">session_scope() (in module ax.storage.sqa_store.db)</a>
 </li>
 <li><a href="core.html#ax.core.parameter.RangeParameter.set_digits">set_digits() (ax.core.parameter.RangeParameter method)</a>
@@ -3099,10 +3125,10 @@ src="/js/documentation_options.js">
 </li>
 <li><a href="storage.html#ax.storage.json_store.encoders.simple_experiment_to_dict">simple_experiment_to_dict() (in module ax.storage.json_store.encoders)</a>
 </li>
-<li><a href="benchmark.html#ax.benchmark.benchmark_problem.SimpleBenchmarkProblem">SimpleBenchmarkProblem (class in ax.benchmark.benchmark_problem)</a>
-</li>
 </ul></td>
 <td style="width: 33%; vertical-align: top;"><ul>
+<li><a href="benchmark.html#ax.benchmark.benchmark_problem.SimpleBenchmarkProblem">SimpleBenchmarkProblem (class in ax.benchmark.benchmark_problem)</a>
+</li>
 <li><a href="ax.html#ax.SimpleExperiment">SimpleExperiment (class in ax)</a>
 <ul>
 <li><a href="core.html#ax.core.simple_experiment.SimpleExperiment">(class in ax.core.simple_experiment)</a>

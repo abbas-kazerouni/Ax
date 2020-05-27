@@ -80,12 +80,6 @@ src="/js/documentation_options.js">
 <span class="sd">        generator_run_type_enum: Enum containing valid Generator Run types.</span>
 <span class="sd">    """</span>
 
-    <span class="c1"># pyre-fixme[8]: Attribute has type `Dict[Type[Base], Type[SQABase]]`; used as</span>
-    <span class="c1">#  `Dict[Type[Union[AbandonedArm, Arm, Data, Experiment, GenerationStrategy,</span>
-    <span class="c1">#  GeneratorRun, Metric, Parameter, ParameterConstraint, Runner, Trial]],</span>
-    <span class="c1">#  Type[Union[SQAAbandonedArm, SQAArm, SQAData, SQAExperiment,</span>
-    <span class="c1">#  SQAGenerationStrategy, SQAGeneratorRun, SQAMetric, SQAParameter,</span>
-    <span class="c1">#  SQAParameterConstraint, SQARunner, SQATrial]]]`.</span>
     <span class="n">class_to_sqa_class</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Base</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="n">SQABase</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">AbandonedArm</span><span class="p">:</span> <span class="n">SQAAbandonedArm</span><span class="p">,</span>
         <span class="n">Arm</span><span class="p">:</span> <span class="n">SQAArm</span><span class="p">,</span>
@@ -100,8 +94,6 @@ src="/js/documentation_options.js">
         <span class="n">Trial</span><span class="p">:</span> <span class="n">SQATrial</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">experiment_type_enum</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Enum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1"># pyre-fixme[8]: Attribute has type `Optional[Enum]`; used as</span>
-    <span class="c1">#  `Type[GeneratorRunType]`.</span>
     <span class="n">generator_run_type_enum</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Enum</span><span class="p">]</span> <span class="o">=</span> <span class="n">GeneratorRunType</span></div>
 </pre></div>
 </div>

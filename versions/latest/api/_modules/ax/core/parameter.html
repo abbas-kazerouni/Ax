@@ -79,9 +79,6 @@ src="/js/documentation_options.js">
 <div class="viewcode-block" id="Parameter.cast"><a class="viewcode-back" href="../../../core.html#ax.Parameter.cast">[docs]</a>    <span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">TParamValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TParamValue</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="c1"># pyre-fixme[6]: Expected `Union[_SupportsIndex, bytearray, bytes, str,</span>
-        <span class="c1">#  typing.SupportsFloat]` for 1st param but got `Union[None, bool, float, int,</span>
-        <span class="c1">#  str]`.</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">python_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Parameter.validate"><a class="viewcode-back" href="../../../core.html#ax.Parameter.validate">[docs]</a>    <span class="nd">@abstractmethod</span>
@@ -145,8 +142,8 @@ src="/js/documentation_options.js">
 <span class="sd">            name: Name of the parameter.</span>
 <span class="sd">            parameter_type: Enum indicating the type of parameter</span>
 <span class="sd">                value (e.g. string, int).</span>
-<span class="sd">            lower: Lower bound of the parameter range.</span>
-<span class="sd">            upper: Upper bound of the parameter range.</span>
+<span class="sd">            lower: Lower bound of the parameter range (inclusive).</span>
+<span class="sd">            upper: Upper bound of the parameter range (inclusive).</span>
 <span class="sd">            log_scale: Whether to sample in the log space when drawing</span>
 <span class="sd">                random values of the parameter.</span>
 <span class="sd">            digits: Number of digits to round values to for float type.</span>
@@ -299,8 +296,6 @@ src="/js/documentation_options.js">
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid_type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="c1"># pyre-fixme[16]: `None` has no attribute `__ge__`.</span>
-        <span class="c1"># pyre-fixme[16]: `None` has no attribute `__le__`.</span>
         <span class="k">return</span> <span class="n">value</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper</span></div>
 
 <div class="viewcode-block" id="RangeParameter.is_valid_type"><a class="viewcode-back" href="../../../core.html#ax.RangeParameter.is_valid_type">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">TParamValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -333,9 +328,6 @@ src="/js/documentation_options.js">
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_type</span> <span class="ow">is</span> <span class="n">ParameterType</span><span class="o">.</span><span class="n">FLOAT</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_digits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># pyre-fixme[6]: Expected `None` for 2nd param but got `Optional[int]`.</span>
             <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_digits</span><span class="p">)</span>
-        <span class="c1"># pyre-fixme[6]: Expected `Union[_SupportsIndex, bytearray, bytes, str,</span>
-        <span class="c1">#  typing.SupportsFloat]` for 1st param but got `Union[None, bool, float, int,</span>
-        <span class="c1">#  str]`.</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">python_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

@@ -36,14 +36,19 @@ src="/js/documentation_options.js">
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">ax.core.arm</span> <span class="kn">import</span> <span class="n">Arm</span>
 <span class="kn">from</span> <span class="nn">ax.core.base</span> <span class="kn">import</span> <span class="n">Base</span>
 <span class="kn">from</span> <span class="nn">ax.core.optimization_config</span> <span class="kn">import</span> <span class="n">OptimizationConfig</span>
 <span class="kn">from</span> <span class="nn">ax.core.search_space</span> <span class="kn">import</span> <span class="n">SearchSpace</span>
-<span class="kn">from</span> <span class="nn">ax.core.types</span> <span class="kn">import</span> <span class="n">TGenMetadata</span><span class="p">,</span> <span class="n">TModelPredict</span><span class="p">,</span> <span class="n">TModelPredictArm</span>
+<span class="kn">from</span> <span class="nn">ax.core.types</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TCandidateMetadata</span><span class="p">,</span>
+    <span class="n">TGenMetadata</span><span class="p">,</span>
+    <span class="n">TModelPredict</span><span class="p">,</span>
+    <span class="n">TModelPredictArm</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ax.utils.common.typeutils</span> <span class="kn">import</span> <span class="n">not_none</span>
 
 
@@ -114,6 +119,9 @@ src="/js/documentation_options.js">
         <span class="n">gen_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TGenMetadata</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">model_state_after_gen</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">generation_step_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">candidate_metadata_by_arm_signature</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TCandidateMetadata</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Inits GeneratorRun.</span>
@@ -152,6 +160,9 @@ src="/js/documentation_options.js">
 <span class="sd">            generation_step_index: Optional index of the generation step that produced</span>
 <span class="sd">                this generator run. Applicable only if the genetator run was created</span>
 <span class="sd">                via a generation strategy.</span>
+<span class="sd">            candidate_metadata_by_arm_signature: Optional dictionary of arm signatures</span>
+<span class="sd">                to model-produced candidate metadata that corresponds to that arm in</span>
+<span class="sd">                this generator run.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arm_weight_table</span><span class="p">:</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArmWeight</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -193,6 +204,18 @@ src="/js/documentation_options.js">
         <span class="bp">self</span><span class="o">.</span><span class="n">_bridge_kwargs</span> <span class="o">=</span> <span class="n">bridge_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gen_metadata</span> <span class="o">=</span> <span class="n">gen_metadata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model_state_after_gen</span> <span class="o">=</span> <span class="n">model_state_after_gen</span>
+        <span class="c1"># If candidate metadata is not None and not empty, check that all arm</span>
+        <span class="c1"># signatures in it correspond to arms in this generator run.</span>
+        <span class="k">if</span> <span class="n">candidate_metadata_by_arm_signature</span><span class="p">:</span>
+            <span class="n">unknown_arms_in_cand_metadata</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">candidate_metadata_by_arm_signature</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_signatures</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">unknown_arms_in_cand_metadata</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Arms with signatures </span><span class="si">{</span><span class="n">unknown_arms_in_cand_metadata</span><span class="si">}</span><span class="s2"> appear in "</span>
+                    <span class="s2">"candidate metadata, but not among the arms on this GeneratorRun."</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_candidate_metadata_by_arm_signature</span> <span class="o">=</span> <span class="n">candidate_metadata_by_arm_signature</span>
 
         <span class="c1"># Validate that generation step index is non-negative.</span>
         <span class="k">assert</span> <span class="n">generation_step_index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">generation_step_index</span> <span class="o">&gt;=</span> <span class="mi">0</span>
@@ -202,6 +225,11 @@ src="/js/documentation_options.js">
     <span class="k">def</span> <span class="nf">arms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Arm</span><span class="p">]:</span>
         <span class="sd">"""Returns arms generated by this run."""</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">cw</span><span class="o">.</span><span class="n">arm</span> <span class="k">for</span> <span class="n">cw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm_weight_table</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">arm_signatures</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">"""Returns signatures of arms generated by this run."""</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">cw</span><span class="o">.</span><span class="n">arm</span><span class="o">.</span><span class="n">signature</span> <span class="k">for</span> <span class="n">cw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm_weight_table</span><span class="o">.</span><span class="n">values</span><span class="p">()}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">weights</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
@@ -282,6 +310,15 @@ src="/js/documentation_options.js">
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gen_metadata</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">candidate_metadata_by_arm_signature</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TCandidateMetadata</span><span class="p">]]:</span>
+        <span class="sd">"""Retrieves model-produced candidate metadata as a mapping from arm name (for</span>
+<span class="sd">        the arm the candidate became when added to experiment) to the metadata dict.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_candidate_metadata_by_arm_signature</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">param_df</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Constructs a Pandas dataframe with the parameter values for each arm.</span>
@@ -346,6 +383,7 @@ src="/js/documentation_options.js">
                 <span class="n">generation_step_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_generation_step_index</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="c1"># Cloning all fields of the generator run.</span>
+        <span class="n">cand_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidate_metadata_by_arm_signature</span>
         <span class="n">generator_run</span> <span class="o">=</span> <span class="n">GeneratorRun</span><span class="p">(</span>
             <span class="n">arms</span><span class="o">=</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arms</span><span class="p">],</span>
             <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">[:]</span> <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
@@ -368,6 +406,7 @@ src="/js/documentation_options.js">
             <span class="n">gen_metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_gen_metadata</span><span class="p">,</span>
             <span class="n">model_state_after_gen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_state_after_gen</span><span class="p">,</span>
             <span class="n">generation_step_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_generation_step_index</span><span class="p">,</span>
+            <span class="n">candidate_metadata_by_arm_signature</span><span class="o">=</span><span class="n">cand_metadata</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">generator_run</span><span class="o">.</span><span class="n">_time_created</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_created</span>
         <span class="n">generator_run</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span>

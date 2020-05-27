@@ -125,6 +125,12 @@ src="/js/documentation_options.js">
     <span class="n">f</span><span class="p">,</span> <span class="n">cov</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prediction_features</span><span class="p">)</span>
     <span class="n">f_plt</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">metric_name</span><span class="p">]</span>
     <span class="n">sd_plt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cov</span><span class="p">[</span><span class="n">metric_name</span><span class="p">][</span><span class="n">metric_name</span><span class="p">])</span>
+    <span class="c1"># pyre-fixme[7]: Expected `Tuple[PlotData, List[Dict[str, Union[float, str]]],</span>
+    <span class="c1">#  List[float], np.ndarray, np.ndarray, str, str, bool, Dict[str, Union[None, bool,</span>
+    <span class="c1">#  float, int, str]], np.ndarray, bool]` but got `Tuple[PlotData, Dict[str,</span>
+    <span class="c1">#  Dict[str, Union[None, bool, float, int, str]]], List[float], List[Dict[str,</span>
+    <span class="c1">#  Union[float, str]]], np.ndarray, str, str, bool, Dict[str, Union[None, bool,</span>
+    <span class="c1">#  float, int, str]], typing.Any, bool]`.</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="n">plot_data</span><span class="p">,</span>
         <span class="n">cond_name_to_parameters</span><span class="p">,</span>

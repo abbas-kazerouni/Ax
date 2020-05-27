@@ -56,7 +56,7 @@ src="/js/documentation_options.js">
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="sd">"""Utilities for storing experiment to the database for AxClient."""</span>
+<span class="sd">"""Utilities for storing experiment to the database via `DBSettings`."""</span>
 
 
 <div class="viewcode-block" id="load_experiment"><a class="viewcode-back" href="../../../../service.html#ax.service.utils.storage.load_experiment">[docs]</a><span class="k">def</span> <span class="nf">load_experiment</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">db_settings</span><span class="p">:</span> <span class="n">DBSettings</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Experiment</span><span class="p">:</span>
@@ -141,6 +141,9 @@ src="/js/documentation_options.js">
     <span class="sd">"""</span>
 <span class="sd">    Save experiment to db.</span>
 
+<span class="sd">    NOTE: This function also saves data attached to experiment</span>
+<span class="sd">    for this trial.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        experiment: `Experiment` object.</span>
 <span class="sd">        trial: `BaseTrial` object.</span>
@@ -160,6 +163,9 @@ src="/js/documentation_options.js">
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">"""</span>
 <span class="sd">    Save experiment to db.</span>
+
+<span class="sd">    NOTE: This function also saves data attached to experiment</span>
+<span class="sd">    for this trial.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        experiment: `Experiment` object.</span>

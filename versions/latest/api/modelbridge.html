@@ -391,6 +391,26 @@ with a <cite>SobolGenerator(scramble=False)</cite> underlying model.</p>
 <code class="sig-name descname">UNIFORM</code><em class="property"> = 'Uniform'</em><a class="headerlink" href="#ax.modelbridge.registry.Models.UNIFORM" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="method">
+<dt id="ax.modelbridge.registry.Models.model_bridge_class">
+<em class="property">property </em><code class="sig-name descname">model_bridge_class</code><a class="headerlink" href="#ax.modelbridge.registry.Models.model_bridge_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of <cite>ModelBridge</cite> used for the given model+bridge setup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="#ax.modelbridge.base.ModelBridge" title="ax.modelbridge.base.ModelBridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModelBridge</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="method">
+<dt id="ax.modelbridge.registry.Models.model_class">
+<em class="property">property </em><code class="sig-name descname">model_class</code><a class="headerlink" href="#ax.modelbridge.registry.Models.model_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of <cite>Model</cite> used for the given model+bridge setup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="models.html#ax.models.base.Model" title="ax.models.base.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="method">
 <dt id="ax.modelbridge.registry.Models.view_defaults">
 <code class="sig-name descname">view_defaults</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ax/modelbridge/registry.html#Models.view_defaults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ax.modelbridge.registry.Models.view_defaults" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtains the default keyword arguments for the model and the modelbridge
@@ -798,10 +818,11 @@ or last update) to be passed in, not all data in the experiment.</p>
 <dl class="function">
 <dt id="ax.modelbridge.base.gen_arms">
 <code class="sig-prename descclassname">ax.modelbridge.base.</code><code class="sig-name descname">gen_arms</code><span class="sig-paren">(</span><em class="sig-param">observation_features</em>, <em class="sig-param">arms_by_signature=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ax/modelbridge/base.html#gen_arms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ax.modelbridge.base.gen_arms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts observation features to arms.</p>
+<dd><p>Converts observation features to a tuple of arms list and candidate metadata
+dict, where arm signatures are mapped to their respective candidate metadata.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="core.html#ax.core.arm.Arm" title="ax.core.arm.Arm"><code class="xref py py-class docutils literal notranslate"><span class="pre">Arm</span></code></a>]</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="core.html#ax.core.arm.Arm" title="ax.core.arm.Arm"><code class="xref py py-class docutils literal notranslate"><span class="pre">Arm</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]]]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1120,13 +1141,14 @@ If there are no pending features for any of the metrics, return is None.</p>
 </dd></dl>
 <dl class="function">
 <dt id="ax.modelbridge.modelbridge_utils.parse_observation_features">
-<code class="sig-prename descclassname">ax.modelbridge.modelbridge_utils.</code><code class="sig-name descname">parse_observation_features</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">param_names</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ax/modelbridge/modelbridge_utils.html#parse_observation_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ax.modelbridge.modelbridge_utils.parse_observation_features" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ax.modelbridge.modelbridge_utils.</code><code class="sig-name descname">parse_observation_features</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">param_names</em>, <em class="sig-param">candidate_metadata=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ax/modelbridge/modelbridge_utils.html#parse_observation_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ax.modelbridge.modelbridge_utils.parse_observation_features" title="Permalink to this definition">¶</a></dt>
 <dd><p>Re-format raw model-generated candidates into ObservationFeatures.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>param_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – List of param names.</p></li>
 <li><p><strong>X</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Raw np.ndarray of candidate values.</p></li>
+<li><p><strong>candidate_metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]]]) – Model’s metadata for candidates it produced.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

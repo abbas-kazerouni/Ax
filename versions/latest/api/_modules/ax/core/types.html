@@ -74,6 +74,9 @@ src="/js/documentation_options.js">
 
 <span class="n">TGenMetadata</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
 
+<span class="c1"># Model's metadata about a given candidate (or X).</span>
+<span class="n">TCandidateMetadata</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+
 
 <div class="viewcode-block" id="ComparisonOp"><a class="viewcode-back" href="../../../core.html#ax.ComparisonOp">[docs]</a><span class="k">class</span> <span class="nc">ComparisonOp</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">"""Class for enumerating comparison operations."""</span>

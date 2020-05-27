@@ -50,8 +50,13 @@ src="/js/documentation_options.js">
 <span class="kn">from</span> <span class="nn">ax.core.base_trial</span> <span class="kn">import</span> <span class="n">BaseTrial</span>
 <span class="kn">from</span> <span class="nn">ax.core.generator_run</span> <span class="kn">import</span> <span class="n">GeneratorRun</span><span class="p">,</span> <span class="n">GeneratorRunType</span>
 <span class="kn">from</span> <span class="nn">ax.core.trial</span> <span class="kn">import</span> <span class="n">immutable_once_run</span>
+<span class="kn">from</span> <span class="nn">ax.core.types</span> <span class="kn">import</span> <span class="n">TCandidateMetadata</span>
 <span class="kn">from</span> <span class="nn">ax.utils.common.equality</span> <span class="kn">import</span> <span class="n">datetime_equals</span><span class="p">,</span> <span class="n">equality_typechecker</span>
+<span class="kn">from</span> <span class="nn">ax.utils.common.logger</span> <span class="kn">import</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">ax.utils.common.typeutils</span> <span class="kn">import</span> <span class="n">checked_cast</span><span class="p">,</span> <span class="n">not_none</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -494,7 +499,39 @@ src="/js/documentation_options.js">
             <span class="sa">f</span><span class="s2">"experiment_name='</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">', "</span>
             <span class="sa">f</span><span class="s2">"index=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="si">}</span><span class="s2">, "</span>
             <span class="sa">f</span><span class="s2">"status=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_status</span><span class="si">}</span><span class="s2">)"</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_candidate_metadata_from_all_generator_runs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TCandidateMetadata</span><span class="p">]:</span>
+        <span class="sd">"""Retrieves combined candidate metadata from all generator runs on this</span>
+<span class="sd">        batch trial in the form of { arm name -&gt; candidate metadata} mapping.</span>
+
+<span class="sd">        NOTE: this does not handle the case of the same arm appearing in multiple</span>
+<span class="sd">        generator runs in the same trial: metadata from only one of the generator</span>
+<span class="sd">        runs containing the arm will be retrieved.</span>
+<span class="sd">        """</span>
+        <span class="n">cand_metadata</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">gr_struct</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generator_run_structs</span><span class="p">:</span>
+            <span class="n">gr</span> <span class="o">=</span> <span class="n">gr_struct</span><span class="o">.</span><span class="n">generator_run</span>
+            <span class="k">if</span> <span class="n">gr</span><span class="o">.</span><span class="n">candidate_metadata_by_arm_signature</span><span class="p">:</span>
+                <span class="n">gr_cand_metadata</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">candidate_metadata_by_arm_signature</span>
+                <span class="n">warn</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">arm</span> <span class="ow">in</span> <span class="n">gr</span><span class="o">.</span><span class="n">arms</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">arm</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">cand_metadata</span><span class="p">:</span>
+                        <span class="n">warn</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">if</span> <span class="n">gr_cand_metadata</span><span class="p">:</span>
+                        <span class="c1"># Reformat the mapping to be by arm name, since arm signature</span>
+                        <span class="c1"># is not stored in Ax data.</span>
+                        <span class="n">cand_metadata</span><span class="p">[</span><span class="n">arm</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">gr_cand_metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arm</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">warn</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">"The same arm appears in multiple generator runs in batch "</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="si">}</span><span class="s2">. Candidate metadata will only contain metadata "</span>
+                        <span class="s2">"for one of those generator runs, and the candidate metadata "</span>
+                        <span class="s2">"for the arm from another generator run will not be propagated."</span>
+                    <span class="p">)</span>
+        <span class="k">return</span> <span class="n">cand_metadata</span></div>
 </pre></div>
 </div>
 </div>

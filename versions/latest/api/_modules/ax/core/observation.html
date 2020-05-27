@@ -44,7 +44,7 @@ src="/js/documentation_options.js">
 <span class="kn">from</span> <span class="nn">ax.core.base</span> <span class="kn">import</span> <span class="n">Base</span>
 <span class="kn">from</span> <span class="nn">ax.core.data</span> <span class="kn">import</span> <span class="n">Data</span>
 <span class="kn">from</span> <span class="nn">ax.core.experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
-<span class="kn">from</span> <span class="nn">ax.core.types</span> <span class="kn">import</span> <span class="n">TParameterization</span>
+<span class="kn">from</span> <span class="nn">ax.core.types</span> <span class="kn">import</span> <span class="n">TCandidateMetadata</span><span class="p">,</span> <span class="n">TParameterization</span>
 
 
 <span class="n">OBS_COLS</span> <span class="o">=</span> <span class="p">{</span>
@@ -86,25 +86,25 @@ src="/js/documentation_options.js">
         <span class="n">trial_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="c1"># pyre-fixme[11]: Annotation `Timestamp` is not defined as a type.</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="c1"># pyre-fixme[11]: Annotation `Timestamp` is not defined as a type.</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">random_split</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">TCandidateMetadata</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trial_index</span> <span class="o">=</span> <span class="n">trial_index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_split</span> <span class="o">=</span> <span class="n">random_split</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>
 
 <div class="viewcode-block" id="ObservationFeatures.from_arm"><a class="viewcode-back" href="../../../core.html#ax.core.observation.ObservationFeatures.from_arm">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_arm</span><span class="p">(</span>
         <span class="n">arm</span><span class="p">:</span> <span class="n">Arm</span><span class="p">,</span>
         <span class="n">trial_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="c1"># pyre-fixme[11]: Annotation `Timestamp` is not defined as a type.</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="c1"># pyre-fixme[11]: Annotation `Timestamp` is not defined as a type.</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">random_split</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">TCandidateMetadata</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ObservationFeatures</span><span class="p">:</span>
         <span class="sd">"""Convert a Arm to an ObservationFeatures, including additional</span>
 <span class="sd">        data as specified.</span>
@@ -115,6 +115,7 @@ src="/js/documentation_options.js">
             <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
             <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
             <span class="n">random_split</span><span class="o">=</span><span class="n">random_split</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ObservationFeatures.update_features"><a class="viewcode-back" href="../../../core.html#ax.core.observation.ObservationFeatures.update_features">[docs]</a>    <span class="k">def</span> <span class="nf">update_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_features</span><span class="p">:</span> <span class="n">ObservationFeatures</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ObservationFeatures</span><span class="p">:</span>
@@ -230,9 +231,11 @@ src="/js/documentation_options.js">
         <span class="k">if</span> <span class="n">arm_name_only</span><span class="p">:</span>
             <span class="n">features</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"arm_name"</span><span class="p">:</span> <span class="n">g</span><span class="p">}</span>
             <span class="n">arm_name</span> <span class="o">=</span> <span class="n">g</span>
+            <span class="n">trial_index</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">features</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">g</span><span class="p">))</span>
             <span class="n">arm_name</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s2">"arm_name"</span><span class="p">]</span>
+            <span class="n">trial_index</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"trial_index"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">obs_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">obs_parameters</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">arms_by_name</span><span class="p">[</span><span class="n">arm_name</span><span class="p">]</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">obs_parameters</span><span class="p">:</span>
@@ -241,9 +244,14 @@ src="/js/documentation_options.js">
             <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">OBS_KWARGS</span><span class="p">:</span>
                 <span class="n">obs_kwargs</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="n">fidelities</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fidelities"</span><span class="p">)</span>
-        <span class="c1"># pyre-fixme[25]: Assertion will always fail.</span>
         <span class="k">if</span> <span class="n">fidelities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">obs_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">fidelities</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">trial_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">trial</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">trials</span><span class="p">[</span><span class="n">trial_index</span><span class="p">]</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">trial</span><span class="o">.</span><span class="n">_get_candidate_metadata_from_all_generator_runs</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">arm_name</span>
+            <span class="p">)</span>
+            <span class="n">obs_kwargs</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span>
         <span class="n">observations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">Observation</span><span class="p">(</span>
                 <span class="n">features</span><span class="o">=</span><span class="n">ObservationFeatures</span><span class="p">(</span><span class="o">**</span><span class="n">obs_kwargs</span><span class="p">),</span>

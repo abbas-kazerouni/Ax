@@ -75,6 +75,9 @@ src="/js/documentation_options.js">
 <span class="n">ONLY_ONE_FIELDS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"experiment_id"</span><span class="p">,</span> <span class="s2">"generator_run_id"</span><span class="p">]</span>
 
 
+<span class="n">ONLY_ONE_METRIC_FIELDS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"scalarized_objective_id"</span><span class="p">]</span>
+
+
 <div class="viewcode-block" id="SQAParameter"><a class="viewcode-back" href="../../../../storage.html#ax.storage.sqa_store.sqa_classes.SQAParameter">[docs]</a><span class="k">class</span> <span class="nc">SQAParameter</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
     <span class="n">__tablename__</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"parameter_v2"</span>
 
@@ -214,6 +217,9 @@ src="/js/documentation_options.js">
         <span class="n">Integer</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">"generation_strategy.id"</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">generation_step_index</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">)</span>
+    <span class="n">candidate_metadata_by_arm_signature</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="n">JSONEncodedTextDict</span>
+    <span class="p">)</span>
 
     <span class="c1"># relationships</span>
     <span class="c1"># Use selectin loading for collections to prevent idle timeout errors</span>

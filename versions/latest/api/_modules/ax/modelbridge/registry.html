@@ -61,6 +61,7 @@ src="/js/documentation_options.js">
 <span class="kn">from</span> <span class="nn">ax.modelbridge.transforms.task_encode</span> <span class="kn">import</span> <span class="n">TaskEncode</span>
 <span class="kn">from</span> <span class="nn">ax.modelbridge.transforms.trial_as_task</span> <span class="kn">import</span> <span class="n">TrialAsTask</span>
 <span class="kn">from</span> <span class="nn">ax.modelbridge.transforms.unit_x</span> <span class="kn">import</span> <span class="n">UnitX</span>
+<span class="kn">from</span> <span class="nn">ax.models.base</span> <span class="kn">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">ax.models.discrete.eb_thompson</span> <span class="kn">import</span> <span class="n">EmpiricalBayesThompsonSampler</span>
 <span class="kn">from</span> <span class="nn">ax.models.discrete.full_factorial</span> <span class="kn">import</span> <span class="n">FullFactorialGenerator</span>
 <span class="kn">from</span> <span class="nn">ax.models.discrete.thompson</span> <span class="kn">import</span> <span class="n">ThompsonSampler</span>
@@ -146,7 +147,7 @@ src="/js/documentation_options.js">
 <span class="sd">    """</span>
 
     <span class="n">bridge_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ModelBridge</span><span class="p">]</span>
-    <span class="n">model_class</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">model_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Model</span><span class="p">]</span>
     <span class="n">transforms</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Transform</span><span class="p">]]</span>
     <span class="n">standard_bridge_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -235,7 +236,17 @@ src="/js/documentation_options.js">
     <span class="n">EMPIRICAL_BAYES_THOMPSON</span> <span class="o">=</span> <span class="s2">"EB"</span>
     <span class="n">UNIFORM</span> <span class="o">=</span> <span class="s2">"Uniform"</span>
 
-    <span class="c1"># TODO[Lena]: test that none of the preset model+bridge combos share a kwarg</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">model_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">Model</span><span class="p">]:</span>
+        <span class="sd">"""Type of `Model` used for the given model+bridge setup."""</span>
+        <span class="k">return</span> <span class="n">MODEL_KEY_TO_MODEL_SETUP</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">model_class</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">model_bridge_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">ModelBridge</span><span class="p">]:</span>
+        <span class="sd">"""Type of `ModelBridge` used for the given model+bridge setup."""</span>
+        <span class="k">return</span> <span class="n">MODEL_KEY_TO_MODEL_SETUP</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">bridge_class</span>
+
+    <span class="c1"># TODO[T67370152]: Test that none of the `ModelSetup`-s share a kwarg.</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">search_space</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SearchSpace</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -317,8 +328,8 @@ src="/js/documentation_options.js">
 <span class="sd">        Returns:</span>
 <span class="sd">            A tuple of annotated keyword arguments for the model and the model bridge.</span>
 <span class="sd">        """</span>
-        <span class="n">model_class</span> <span class="o">=</span> <span class="n">MODEL_KEY_TO_MODEL_SETUP</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">model_class</span>
-        <span class="n">bridge_class</span> <span class="o">=</span> <span class="n">MODEL_KEY_TO_MODEL_SETUP</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">bridge_class</span>
+        <span class="n">model_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_class</span>
+        <span class="n">bridge_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_bridge_class</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="p">{</span><span class="n">kw</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">annotation</span> <span class="k">for</span> <span class="n">kw</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">signature</span><span class="p">(</span><span class="n">model_class</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
             <span class="p">{</span><span class="n">kw</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">annotation</span> <span class="k">for</span> <span class="n">kw</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">signature</span><span class="p">(</span><span class="n">bridge_class</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
@@ -387,7 +398,8 @@ src="/js/documentation_options.js">
     <span class="n">model</span> <span class="o">=</span> <span class="p">(</span><span class="n">models_enum</span> <span class="ow">or</span> <span class="n">Models</span><span class="p">)(</span><span class="n">generator_run</span><span class="o">.</span><span class="n">_model_key</span><span class="p">)</span>
     <span class="n">model_kwargs</span> <span class="o">=</span> <span class="n">generator_run</span><span class="o">.</span><span class="n">_model_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">after_gen</span> <span class="ow">and</span> <span class="n">generator_run</span><span class="o">.</span><span class="n">_model_state_after_gen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">model_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">not_none</span><span class="p">(</span><span class="n">generator_run</span><span class="o">.</span><span class="n">_model_state_after_gen</span><span class="p">))</span>
+        <span class="n">serialized_model_state</span> <span class="o">=</span> <span class="n">not_none</span><span class="p">(</span><span class="n">generator_run</span><span class="o">.</span><span class="n">_model_state_after_gen</span><span class="p">)</span>
+        <span class="n">model_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">model_class</span><span class="o">.</span><span class="n">deserialize_state</span><span class="p">(</span><span class="n">serialized_model_state</span><span class="p">))</span>
     <span class="n">bridge_kwargs</span> <span class="o">=</span> <span class="n">generator_run</span><span class="o">.</span><span class="n">_bridge_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="n">model_kwargs</span> <span class="o">=</span> <span class="n">_decode_callables_from_references</span><span class="p">(</span><span class="n">model_kwargs</span><span class="p">)</span>
     <span class="n">bridge_kwargs</span> <span class="o">=</span> <span class="n">_decode_callables_from_references</span><span class="p">(</span><span class="n">bridge_kwargs</span><span class="p">)</span>

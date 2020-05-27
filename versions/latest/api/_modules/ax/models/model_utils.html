@@ -328,9 +328,6 @@ src="/js/documentation_options.js">
     <span class="c1"># Get points observed for all objective and constraint outcomes</span>
     <span class="k">if</span> <span class="n">objective_weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># pragma: no cover</span>
-    <span class="c1"># pyre-fixme[6]: Expected `Union[np.ndarray, torch.Tensor,</span>
-    <span class="c1">#  typing.Tuple[Union[np.ndarray, torch.Tensor], ...]]` for 1st param but got</span>
-    <span class="c1">#  `Union[None, np.ndarray, torch.Tensor]`.</span>
     <span class="n">objective_weights_np</span> <span class="o">=</span> <span class="n">as_array</span><span class="p">(</span><span class="n">objective_weights</span><span class="p">)</span>
     <span class="n">X_obs</span> <span class="o">=</span> <span class="n">get_observed</span><span class="p">(</span>
         <span class="c1"># pyre-fixme[16]: attribute must exist, otherwise error raised above</span>

@@ -114,6 +114,8 @@ src="/js/documentation_options.js">
         <span class="p">)</span>
     <span class="k">if</span> <span class="n">use_Service_API</span><span class="p">:</span>
         <span class="n">sem</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">evaluation_function</span><span class="p">,</span> <span class="n">SyntheticFunction</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="c1"># pyre-fixme[7]: Expected `Union[Tuple[float, float], Data]` but got</span>
+        <span class="c1">#  `Tuple[typing.Any, Optional[float]]`.</span>
         <span class="k">return</span> <span class="n">evaluation_function</span><span class="p">(</span><span class="n">parameterization</span><span class="p">),</span> <span class="n">sem</span>  <span class="c1"># pyre-ignore[29]: call err.</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">trial_index</span> <span class="o">=</span> <span class="n">not_none</span><span class="p">(</span><span class="n">trial_index</span><span class="p">)</span>
@@ -523,12 +525,13 @@ src="/js/documentation_options.js">
             <span class="n">previous_ts</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">trials</span><span class="p">[</span><span class="n">num_trials</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">time_created</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
             <span class="n">gen_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">previous_ts</span>
         <span class="c1"># Create a GR</span>
+        <span class="n">arms</span><span class="p">,</span> <span class="n">candidate_metadata_by_arm_signature</span> <span class="o">=</span> <span class="n">gen_arms</span><span class="p">(</span>
+            <span class="n">observation_features</span><span class="o">=</span><span class="p">[</span><span class="n">obsf</span><span class="p">],</span> <span class="n">arms_by_signature</span><span class="o">=</span><span class="n">experiment</span><span class="o">.</span><span class="n">arms_by_signature</span>
+        <span class="p">)</span>
         <span class="n">gr</span> <span class="o">=</span> <span class="n">GeneratorRun</span><span class="p">(</span>
-            <span class="n">arms</span><span class="o">=</span><span class="n">gen_arms</span><span class="p">(</span>
-                <span class="n">observation_features</span><span class="o">=</span><span class="p">[</span><span class="n">obsf</span><span class="p">],</span>
-                <span class="n">arms_by_signature</span><span class="o">=</span><span class="n">experiment</span><span class="o">.</span><span class="n">arms_by_signature</span><span class="p">,</span>
-            <span class="p">),</span>
+            <span class="n">arms</span><span class="o">=</span><span class="n">arms</span><span class="p">,</span>
             <span class="n">gen_time</span><span class="o">=</span><span class="n">gen_time</span><span class="p">,</span>
+            <span class="n">candidate_metadata_by_arm_signature</span><span class="o">=</span><span class="n">candidate_metadata_by_arm_signature</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="c1"># Add it as a trial</span>
         <span class="n">trial</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">new_trial</span><span class="p">()</span><span class="o">.</span><span class="n">add_generator_run</span><span class="p">(</span><span class="n">gr</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>

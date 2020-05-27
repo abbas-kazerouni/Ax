@@ -136,6 +136,10 @@ src="/js/documentation_options.js">
         <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span>
             <span class="n">Ystd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Outcome </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> is constant, within tolerance."</span><span class="p">)</span>
+    <span class="c1"># pyre-fixme[7]: Expected `Tuple[Dict[Union[Tuple[str, str], str], float],</span>
+    <span class="c1">#  Dict[Union[Tuple[str, str], str], float]]` but got `Tuple[Dict[Union[Tuple[str,</span>
+    <span class="c1">#  Union[None, bool, float, int, str]], str], typing.Any], Dict[Union[Tuple[str,</span>
+    <span class="c1">#  Union[None, bool, float, int, str]], str], typing.Any]]`.</span>
     <span class="k">return</span> <span class="n">Ymean</span><span class="p">,</span> <span class="n">Ystd</span></div>
 </pre></div>
 </div>

@@ -37,6 +37,7 @@ src="/js/documentation_options.js">
 <span class="kn">from</span> <span class="nn">ax.storage.sqa_store.db</span> <span class="kn">import</span> <span class="n">SQABase</span>
 <span class="kn">from</span> <span class="nn">ax.storage.sqa_store.sqa_classes</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ONLY_ONE_FIELDS</span><span class="p">,</span>
+    <span class="n">ONLY_ONE_METRIC_FIELDS</span><span class="p">,</span>
     <span class="n">SQAMetric</span><span class="p">,</span>
     <span class="n">SQAParameter</span><span class="p">,</span>
     <span class="n">SQAParameterConstraint</span><span class="p">,</span>
@@ -74,7 +75,7 @@ src="/js/documentation_options.js">
 <div class="viewcode-block" id="validate_metric"><a class="viewcode-back" href="../../../../storage.html#ax.storage.sqa_store.validation.validate_metric">[docs]</a><span class="nd">@event</span><span class="o">.</span><span class="n">listens_for</span><span class="p">(</span><span class="n">SQAMetric</span><span class="p">,</span> <span class="s2">"before_insert"</span><span class="p">)</span>
 <span class="nd">@event</span><span class="o">.</span><span class="n">listens_for</span><span class="p">(</span><span class="n">SQAMetric</span><span class="p">,</span> <span class="s2">"before_update"</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">validate_metric</span><span class="p">(</span><span class="n">mapper</span><span class="p">:</span> <span class="n">Mapper</span><span class="p">,</span> <span class="n">connection</span><span class="p">:</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">SQABase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">consistency_exactly_one</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">ONLY_ONE_FIELDS</span><span class="p">)</span></div>
+    <span class="n">consistency_exactly_one</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">ONLY_ONE_FIELDS</span> <span class="o">+</span> <span class="n">ONLY_ONE_METRIC_FIELDS</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="validate_runner"><a class="viewcode-back" href="../../../../storage.html#ax.storage.sqa_store.validation.validate_runner">[docs]</a><span class="nd">@event</span><span class="o">.</span><span class="n">listens_for</span><span class="p">(</span><span class="n">SQARunner</span><span class="p">,</span> <span class="s2">"before_insert"</span><span class="p">)</span>

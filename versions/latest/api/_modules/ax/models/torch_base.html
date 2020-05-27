@@ -35,7 +35,7 @@ src="/js/documentation_options.js">
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">ax.core.types</span> <span class="kn">import</span> <span class="n">TConfig</span><span class="p">,</span> <span class="n">TGenMetadata</span>
+<span class="kn">from</span> <span class="nn">ax.core.types</span> <span class="kn">import</span> <span class="n">TCandidateMetadata</span><span class="p">,</span> <span class="n">TConfig</span><span class="p">,</span> <span class="n">TGenMetadata</span>
 <span class="kn">from</span> <span class="nn">ax.models.base</span> <span class="kn">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
 
@@ -62,6 +62,7 @@ src="/js/documentation_options.js">
         <span class="n">feature_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">metric_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">fidelity_features</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">candidate_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">TCandidateMetadata</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""Fit model to m outcomes.</span>
 
@@ -78,6 +79,8 @@ src="/js/documentation_options.js">
 <span class="sd">            metric_names: Names of each outcome Y in Ys.</span>
 <span class="sd">            fidelity_features: Columns of X that should be treated as fidelity</span>
 <span class="sd">                parameters.</span>
+<span class="sd">            candidate_metadata: Model-produced metadata for candidates, in</span>
+<span class="sd">                the order corresponding to the Xs.</span>
 <span class="sd">        """</span>
         <span class="k">pass</span></div>
 
@@ -108,7 +111,7 @@ src="/js/documentation_options.js">
         <span class="n">model_gen_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">rounding_func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">target_fidelities</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">TGenMetadata</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">TGenMetadata</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">TCandidateMetadata</span><span class="p">]]]:</span>
         <span class="sd">"""</span>
 <span class="sd">        Generate new candidates.</span>
 
@@ -136,10 +139,11 @@ src="/js/documentation_options.js">
 <span class="sd">                multi-fidelity optimization.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            3-element tuple containing</span>
+<span class="sd">            4-element tuple containing</span>
 
 <span class="sd">            - (n x d) tensor of generated points.</span>
 <span class="sd">            - n-tensor of weights for each point.</span>
+<span class="sd">            - Generation metadata</span>
 <span class="sd">            - Dictionary of model-specific metadata for the given</span>
 <span class="sd">                generation candidates</span>
 <span class="sd">        """</span>
@@ -213,7 +217,13 @@ src="/js/documentation_options.js">
 <span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="TorchModel.update"><a class="viewcode-back" href="../../../models.html#ax.models.torch_base.TorchModel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Xs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Ys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Yvars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="TorchModel.update"><a class="viewcode-back" href="../../../models.html#ax.models.torch_base.TorchModel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">Xs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">Ys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">Yvars</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">],</span>
+        <span class="n">candidate_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">TCandidateMetadata</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""Update the model.</span>
 
 <span class="sd">        Updating the model requires both existing and additional data.</span>
@@ -226,6 +236,8 @@ src="/js/documentation_options.js">
 <span class="sd">                in the same format as for `fit`.</span>
 <span class="sd">            Yvars: Existing + additional data for the model,</span>
 <span class="sd">                in the same format as for `fit`.</span>
+<span class="sd">            candidate_metadata: Model-produced metadata for candidates, in</span>
+<span class="sd">                the order corresponding to the Xs.</span>
 <span class="sd">        """</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 </pre></div>

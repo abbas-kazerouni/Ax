@@ -328,6 +328,7 @@ src="/js/documentation_options.js">
                 <span class="p">},</span>
             <span class="p">}</span>
             <span class="k">for</span> <span class="n">step_idx</span><span class="p">,</span> <span class="n">trials</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trial_indices_by_step</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="c1"># pyre-fixme[10]: Name `trials` is used but not defined.</span>
             <span class="k">for</span> <span class="n">trial_idx</span> <span class="ow">in</span> <span class="n">trials</span>
         <span class="p">]</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">records</span><span class="p">)</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span>
@@ -420,7 +421,6 @@ src="/js/documentation_options.js">
                 <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">num_trials</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="n">step</span><span class="o">.</span><span class="n">num_trials</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">remaining_trials</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">Models</span><span class="p">):</span>
-                <span class="c1"># pyre-ignore[16]: `Union` has no attribute `value`.</span>
                 <span class="nb">repr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">step</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="n">num_trials</span><span class="si">}</span><span class="s2"> trials, "</span>
         <span class="nb">repr</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
         <span class="nb">repr</span> <span class="o">+=</span> <span class="s2">"])"</span>
@@ -429,13 +429,8 @@ src="/js/documentation_options.js">
     <span class="c1"># ------------------------- Model selection logic helpers. -------------------------</span>
 
     <span class="k">def</span> <span class="nf">_set_or_update_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">model_state</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">lgr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_generator_run</span>
-        <span class="k">if</span> <span class="n">lgr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lgr</span><span class="o">.</span><span class="n">_model_state_after_gen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">model_state</span> <span class="o">=</span> <span class="n">not_none</span><span class="p">(</span><span class="n">lgr</span><span class="o">.</span><span class="n">_model_state_after_gen</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr</span><span class="o">.</span><span class="n">num_trials</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>  <span class="c1"># Unlimited trials, just use curr. model.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_or_update_current_model</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">model_state</span><span class="o">=</span><span class="n">model_state</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_or_update_current_model</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Not unlimited trials =&gt; determine whether to transition to next model.</span>
@@ -476,27 +471,38 @@ src="/js/documentation_options.js">
             <span class="c1"># This is the first time this step's model is initialized, so we don't</span>
             <span class="c1"># try to `update` it but rather initialize with all the data even if</span>
             <span class="c1"># `use_update` is true for the now-current generation step.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_current_model</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">model_state</span><span class="o">=</span><span class="n">model_state</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_current_model</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Continue generating from the current model.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_or_update_current_model</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">model_state</span><span class="o">=</span><span class="n">model_state</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_or_update_current_model</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_or_update_current_model</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Data</span><span class="p">],</span> <span class="n">model_state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_set_or_update_current_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr</span><span class="o">.</span><span class="n">use_update</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_current_model</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_current_model</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">model_state</span><span class="o">=</span><span class="n">model_state</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_current_model</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_current_model</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Data</span><span class="p">],</span> <span class="n">model_state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_set_current_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Data</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">"""Instantiate the current model with all available data.</span>
 <span class="sd">        """</span>
         <span class="n">model_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr</span><span class="o">.</span><span class="n">model_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="n">model_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model_state</span><span class="p">)</span>
-        <span class="c1"># TODO[T65857344]: move from fetching all data to using cached data</span>
+
+        <span class="c1"># If last generator run's index matches the current step, extract</span>
+        <span class="c1"># model state from last generator run and pass it to the model</span>
+        <span class="c1"># being instantiated in this function.</span>
+        <span class="n">lgr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_generator_run</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">lgr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">lgr</span><span class="o">.</span><span class="n">_generation_step_index</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr</span><span class="o">.</span><span class="n">index</span>
+            <span class="ow">and</span> <span class="n">lgr</span><span class="o">.</span><span class="n">_model_state_after_gen</span>
+        <span class="p">):</span>
+            <span class="n">serialized_model_state</span> <span class="o">=</span> <span class="n">not_none</span><span class="p">(</span><span class="n">lgr</span><span class="o">.</span><span class="n">_model_state_after_gen</span><span class="p">)</span>
+            <span class="n">model_state</span> <span class="o">=</span> <span class="n">not_none</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">_deserialize_model_state</span><span class="p">(</span>
+                <span class="n">serialized_model_state</span>
+            <span class="p">)</span>
+            <span class="n">model_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model_state</span><span class="p">)</span>
+
+        <span class="c1"># TODO[T65857344]: Move from fetching all data to using cached data.</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">fetch_data</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_curr</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">Models</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_current_model_from_models_enum</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">model_kwargs</span><span class="p">)</span>

@@ -236,6 +236,8 @@ src="/js/documentation_options.js">
         <span class="n">prune_baseline</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"prune_baseline"</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
         <span class="n">mc_samples</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mc_samples"</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span>
         <span class="n">qmc</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"qmc"</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="c1"># pyre-fixme[6]: Expected `Optional[int]` for 9th param but got</span>
+        <span class="c1">#  `Union[float, int]`.</span>
         <span class="n">seed</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span>
     <span class="p">)</span></div>
 
@@ -295,6 +297,7 @@ src="/js/documentation_options.js">
         <span class="n">inequality_constraints</span><span class="o">=</span><span class="n">inequality_constraints</span><span class="p">,</span>
         <span class="n">fixed_features</span><span class="o">=</span><span class="n">fixed_features</span><span class="p">,</span>
         <span class="n">sequential</span><span class="o">=</span><span class="n">sequential</span><span class="p">,</span>
+        <span class="n">post_processing_func</span><span class="o">=</span><span class="n">rounding_func</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">expected_acquisition_value</span></div>
 

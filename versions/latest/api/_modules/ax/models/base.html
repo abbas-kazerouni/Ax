@@ -45,6 +45,21 @@ src="/js/documentation_options.js">
 <span class="sd">    which they all share the signature.</span>
 <span class="sd">    """</span>
 
+<div class="viewcode-block" id="Model.serialize_state"><a class="viewcode-back" href="../../../models.html#ax.models.base.Model.serialize_state">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">serialize_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">raw_state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">"""Serialized output of `self._get_state` to a JSON-ready dict.</span>
+<span class="sd">        This may involve storing part of state in files / external storage and</span>
+<span class="sd">        saving handles for that storage in the resulting serialized state.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">raw_state</span>  <span class="c1"># pragma: no cover</span></div>
+
+<div class="viewcode-block" id="Model.deserialize_state"><a class="viewcode-back" href="../../../models.html#ax.models.base.Model.deserialize_state">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">deserialize_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">serialized_state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">"""Restores model's state from its serialized form, to the format it</span>
+<span class="sd">        expects to receive as kwargs.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">serialized_state</span>  <span class="c1"># pragma: no cover</span></div>
+
     <span class="k">def</span> <span class="nf">_get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">"""Obtain the state of this model, in order to be able to serialize it</span>
 <span class="sd">        and restore it from the serialized version.</span>
@@ -58,6 +73,9 @@ src="/js/documentation_options.js">
 <span class="sd">        this method, so that a model can be reinstantiated and 'pick up where it</span>
 <span class="sd">        left off' –– more arms can be generated as if the model just continued</span>
 <span class="sd">        generation and was never interrupted and serialized.</span>
+
+<span class="sd">        NOTE: In most cases, `state` is passed into the model's initialization as</span>
+<span class="sd">        kwargs, so keys in the state dict should correspond to model's kwargs.</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># pragma: no cover</span>
 

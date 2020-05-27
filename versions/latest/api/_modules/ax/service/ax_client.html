@@ -67,13 +67,13 @@ src="/js/documentation_options.js">
     <span class="n">make_experiment</span><span class="p">,</span>
     <span class="n">raw_data_to_evaluation</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ax.service.utils.with_db_settings_base</span> <span class="kn">import</span> <span class="n">DBSettings</span><span class="p">,</span> <span class="n">WithDBSettingsBase</span>
 <span class="kn">from</span> <span class="nn">ax.storage.json_store.decoder</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">generation_strategy_from_json</span><span class="p">,</span>
     <span class="n">object_from_json</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ax.storage.json_store.encoder</span> <span class="kn">import</span> <span class="n">object_to_json</span>
 <span class="kn">from</span> <span class="nn">ax.utils.common.docutils</span> <span class="kn">import</span> <span class="n">copy_doc</span>
-<span class="kn">from</span> <span class="nn">ax.utils.common.executils</span> <span class="kn">import</span> <span class="n">retry_on_exception</span>
 <span class="kn">from</span> <span class="nn">ax.utils.common.logger</span> <span class="kn">import</span> <span class="n">_round_floats_for_logging</span><span class="p">,</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">ax.utils.common.typeutils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">checked_cast</span><span class="p">,</span>
@@ -87,26 +87,7 @@ src="/js/documentation_options.js">
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">try</span><span class="p">:</span>  <span class="c1"># We don't require SQLAlchemy by default.</span>
-    <span class="kn">from</span> <span class="nn">sqlalchemy.exc</span> <span class="kn">import</span> <span class="n">OperationalError</span>
-    <span class="kn">from</span> <span class="nn">ax.storage.sqa_store.structs</span> <span class="kn">import</span> <span class="n">DBSettings</span>
-    <span class="kn">from</span> <span class="nn">ax.service.utils.storage</span> <span class="kn">import</span> <span class="p">(</span>
-        <span class="n">load_experiment_and_generation_strategy</span><span class="p">,</span>
-        <span class="n">save_experiment</span><span class="p">,</span>
-        <span class="n">save_generation_strategy</span><span class="p">,</span>
-        <span class="n">save_new_trial</span><span class="p">,</span>
-        <span class="n">save_updated_trial</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="n">retry_exception_type_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">OperationalError</span><span class="p">,)</span>
-<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-    <span class="n">DBSettings</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="c1"># Return a list of suppressable exceptions not including unimportable ones.</span>
-    <span class="c1"># pyre-fixme[9]: declared as `Tuple[...[OperationalError]]` but used as `Tuple[]`.</span>
-    <span class="n">retry_exception_type_tuple</span> <span class="o">=</span> <span class="p">()</span>
-
-
-<div class="viewcode-block" id="AxClient"><a class="viewcode-back" href="../../../service.html#ax.service.ax_client.AxClient">[docs]</a><span class="k">class</span> <span class="nc">AxClient</span><span class="p">:</span>
+<div class="viewcode-block" id="AxClient"><a class="viewcode-back" href="../../../service.html#ax.service.ax_client.AxClient">[docs]</a><span class="k">class</span> <span class="nc">AxClient</span><span class="p">(</span><span class="n">WithDBSettingsBase</span><span class="p">):</span>
     <span class="sd">"""</span>
 <span class="sd">    Convenience handler for management of experimentation cycle through a</span>
 <span class="sd">    service-like API. External system manages scheduling of the cycle and makes</span>
@@ -165,12 +146,13 @@ src="/js/documentation_options.js">
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">generation_strategy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GenerationStrategy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">db_settings</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">db_settings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DBSettings</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">enforce_sequential_optimization</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">random_seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">verbose_logging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">suppress_storage_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">db_settings</span><span class="o">=</span><span class="n">db_settings</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">verbose_logging</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">else</span><span class="p">:</span>
@@ -180,13 +162,6 @@ src="/js/documentation_options.js">
                 <span class="s2">"values in the logs are rounded to 2 decimal points."</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_generation_strategy</span> <span class="o">=</span> <span class="n">generation_strategy</span>
-        <span class="k">if</span> <span class="n">db_settings</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">DBSettings</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db_settings</span><span class="p">,</span> <span class="n">DBSettings</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">"`db_settings` argument should be of type ax.storage.sqa_store."</span>
-                <span class="s2">"structs.DBSettings. To use `DBSettings`, you will need SQLAlchemy "</span>
-                <span class="s2">"installed in your environment (can be installed through pip)."</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span> <span class="o">=</span> <span class="n">db_settings</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_experiment</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Experiment</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_enforce_sequential_optimization</span> <span class="o">=</span> <span class="n">enforce_sequential_optimization</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_random_seed</span> <span class="o">=</span> <span class="n">random_seed</span>
@@ -250,19 +225,15 @@ src="/js/documentation_options.js">
 <span class="sd">                `choose_generation_strategy` function which determines what</span>
 <span class="sd">                generation strategy should be used when none was specified on init.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_settings_set</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
                 <span class="s2">"Must give the experiment a name if `db_settings` is not None."</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span><span class="p">:</span>
-            <span class="n">existing</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">existing</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">load_experiment_and_generation_strategy</span><span class="p">(</span>
-                    <span class="n">experiment_name</span><span class="o">=</span><span class="n">not_none</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">db_settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span>
-                <span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># Experiment does not exist, nothing to do.</span>
-                <span class="k">pass</span>
-            <span class="k">if</span> <span class="n">existing</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_settings_set</span><span class="p">:</span>
+            <span class="n">experiment</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_experiment_and_generation_strategy</span><span class="p">(</span>
+                <span class="n">experiment_name</span><span class="o">=</span><span class="n">not_none</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">experiment</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">"Experiment </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> already exists in the database. "</span>
                     <span class="s2">"To protect experiments that are running in production, "</span>
@@ -300,7 +271,8 @@ src="/js/documentation_options.js">
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_save_experiment_to_db_if_possible</span><span class="p">(</span>
-                <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span>
+                <span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span>
+                <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="c1"># Unset the experiment on this `AxClient` instance if encountered and</span>
@@ -315,7 +287,8 @@ src="/js/documentation_options.js">
             <span class="n">choose_generation_strategy_kwargs</span><span class="o">=</span><span class="n">choose_generation_strategy_kwargs</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_generation_strategy_to_db_if_possible</span><span class="p">(</span>
-            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span>
+            <span class="n">generation_strategy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generation_strategy</span><span class="p">,</span>
+            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="AxClient.get_next_trial"><a class="viewcode-back" href="../../../service.html#ax.service.ax_client.AxClient.get_next_trial">[docs]</a>    <span class="k">def</span> <span class="nf">get_next_trial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TParameterization</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
@@ -334,10 +307,13 @@ src="/js/documentation_options.js">
         <span class="p">)</span>
         <span class="n">trial</span><span class="o">.</span><span class="n">mark_running</span><span class="p">(</span><span class="n">no_runner_required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_new_trial_to_db_if_possible</span><span class="p">(</span>
-            <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span>
+            <span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span>
+            <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span>
+            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_generation_strategy_to_db_if_possible</span><span class="p">(</span>
-            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span>
+            <span class="n">generation_strategy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generation_strategy</span><span class="p">,</span>
+            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">not_none</span><span class="p">(</span><span class="n">trial</span><span class="o">.</span><span class="n">arm</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">trial</span><span class="o">.</span><span class="n">index</span></div>
 
@@ -364,7 +340,6 @@ src="/js/documentation_options.js">
 <span class="sd">                optional.</span>
 <span class="sd">        """</span>
         <span class="c1"># Validate that trial can be completed.</span>
-        <span class="c1"># pyre-fixme[25]: Assertion will always fail.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trial_index</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Trial index must be an int, got: </span><span class="si">{</span><span class="n">trial_index</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
         <span class="n">trial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_trial</span><span class="p">(</span><span class="n">trial_index</span><span class="o">=</span><span class="n">trial_index</span><span class="p">)</span>
@@ -386,7 +361,9 @@ src="/js/documentation_options.js">
             <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_round_floats_for_logging</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">data_for_logging</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_updated_trial_to_db_if_possible</span><span class="p">(</span>
-            <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span>
+            <span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span>
+            <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span>
+            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="AxClient.update_trial_data"><a class="viewcode-back" href="../../../service.html#ax.service.ax_client.AxClient.update_trial_data">[docs]</a>    <span class="k">def</span> <span class="nf">update_trial_data</span><span class="p">(</span>
@@ -443,7 +420,8 @@ src="/js/documentation_options.js">
             <span class="sa">f</span><span class="s2">"to trial </span><span class="si">{</span><span class="n">trial</span><span class="o">.</span><span class="n">index</span><span class="si">}</span><span class="s2">."</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_experiment_to_db_if_possible</span><span class="p">(</span>
-            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span>
+            <span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span>
+            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="AxClient.log_trial_failure"><a class="viewcode-back" href="../../../service.html#ax.service.ax_client.AxClient.log_trial_failure">[docs]</a>    <span class="k">def</span> <span class="nf">log_trial_failure</span><span class="p">(</span>
@@ -461,7 +439,8 @@ src="/js/documentation_options.js">
         <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">trial</span><span class="o">.</span><span class="n">_run_metadata</span> <span class="o">=</span> <span class="n">metadata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_experiment_to_db_if_possible</span><span class="p">(</span>
-            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span>
+            <span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span>
+            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="AxClient.attach_trial"><a class="viewcode-back" href="../../../service.html#ax.service.ax_client.AxClient.attach_trial">[docs]</a>    <span class="k">def</span> <span class="nf">attach_trial</span><span class="p">(</span>
@@ -483,7 +462,9 @@ src="/js/documentation_options.js">
             <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_round_floats_for_logging</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">parameters</span><span class="p">)</span><span class="si">}</span><span class="s2"> as trial </span><span class="si">{</span><span class="n">trial</span><span class="o">.</span><span class="n">index</span><span class="si">}</span><span class="s2">."</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_new_trial_to_db_if_possible</span><span class="p">(</span>
-            <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span>
+            <span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span>
+            <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span>
+            <span class="n">suppress_all_errors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_suppress_storage_errors</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">not_none</span><span class="p">(</span><span class="n">trial</span><span class="o">.</span><span class="n">arm</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">trial</span><span class="o">.</span><span class="n">index</span></div>
 
@@ -698,14 +679,11 @@ src="/js/documentation_options.js">
 <span class="sd">        Returns:</span>
 <span class="sd">            Experiment object.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
-                <span class="s2">"Cannot load an experiment in the absence of the DB settings."</span>
-                <span class="s2">"Please initialize `AxClient` with DBSettings."</span>
-            <span class="p">)</span>
-        <span class="n">experiment</span><span class="p">,</span> <span class="n">generation_strategy</span> <span class="o">=</span> <span class="n">load_experiment_and_generation_strategy</span><span class="p">(</span>
-            <span class="n">experiment_name</span><span class="o">=</span><span class="n">experiment_name</span><span class="p">,</span> <span class="n">db_settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span>
+        <span class="n">experiment</span><span class="p">,</span> <span class="n">generation_strategy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_experiment_and_generation_strategy</span><span class="p">(</span>
+            <span class="n">experiment_name</span><span class="o">=</span><span class="n">experiment_name</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="n">experiment</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Experiment by name '</span><span class="si">{</span><span class="n">experiment_name</span><span class="si">}</span><span class="s2">' not found."</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_experiment</span> <span class="o">=</span> <span class="n">experiment</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded </span><span class="si">{</span><span class="n">experiment</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">generation_strategy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
@@ -871,94 +849,11 @@ src="/js/documentation_options.js">
         <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generation_strategy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_generation_strategy</span> <span class="o">=</span> <span class="n">choose_generation_strategy</span><span class="p">(</span>
-                <span class="n">search_space</span><span class="o">=</span><span class="n">not_none</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_experiment</span><span class="p">)</span><span class="o">.</span><span class="n">search_space</span><span class="p">,</span>
+                <span class="n">search_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">search_space</span><span class="p">,</span>
                 <span class="n">enforce_sequential_optimization</span><span class="o">=</span><span class="n">enforce_sequential_optimization</span><span class="p">,</span>
                 <span class="n">random_seed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">choose_generation_strategy_kwargs</span><span class="p">,</span>
             <span class="p">)</span>
-
-    <span class="nd">@retry_on_exception</span><span class="p">(</span>
-        <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">default_return_on_suppression</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">exception_types</span><span class="o">=</span><span class="n">retry_exception_type_tuple</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_save_experiment_to_db_if_possible</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">"""Saves attached experiment and generation strategy if DB settings are</span>
-<span class="sd">        set on this AxClient instance.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: Whether the experiment was saved.</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">save_experiment</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span> <span class="n">db_settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="nd">@retry_on_exception</span><span class="p">(</span>
-        <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">default_return_on_suppression</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">exception_types</span><span class="o">=</span><span class="n">retry_exception_type_tuple</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_save_new_trial_to_db_if_possible</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">:</span> <span class="n">BaseTrial</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">"""Saves given trial and generation strategy if DB settings are</span>
-<span class="sd">        set on this AxClient instance.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: Whether the experiment was saved.</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">save_new_trial</span><span class="p">(</span>
-                <span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span> <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">db_settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="nd">@retry_on_exception</span><span class="p">(</span>
-        <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">default_return_on_suppression</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">exception_types</span><span class="o">=</span><span class="n">retry_exception_type_tuple</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_save_updated_trial_to_db_if_possible</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">:</span> <span class="n">BaseTrial</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">"""Saves attached experiment and generation strategy if DB settings are</span>
-<span class="sd">        set on this AxClient instance.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: Whether the experiment was saved.</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">save_updated_trial</span><span class="p">(</span>
-                <span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span> <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">db_settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span>
-
-    <span class="nd">@retry_on_exception</span><span class="p">(</span>
-        <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">default_return_on_suppression</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">exception_types</span><span class="o">=</span><span class="n">retry_exception_type_tuple</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_save_generation_strategy_to_db_if_possible</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">"""Saves attached experiment and generation strategy if DB settings are</span>
-<span class="sd">        set on this AxClient instance.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: Whether the experiment was saved.</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">save_generation_strategy</span><span class="p">(</span>
-                <span class="n">generation_strategy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">generation_strategy</span><span class="p">,</span>
-                <span class="n">db_settings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db_settings</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_gen_new_generator_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GeneratorRun</span><span class="p">:</span>
         <span class="sd">"""Generate new generator run for this experiment.</span>

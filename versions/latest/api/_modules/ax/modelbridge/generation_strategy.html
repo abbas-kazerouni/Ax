@@ -502,8 +502,22 @@ src="/js/documentation_options.js">
             <span class="p">)</span>
             <span class="n">model_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model_state</span><span class="p">)</span>
 
-        <span class="c1"># TODO[T65857344]: Move from fetching all data to using cached data.</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">fetch_data</span><span class="p">()</span>
+        <span class="c1"># TODO[T65857344]: move from fetching all data to using cached data</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curr</span><span class="o">.</span><span class="n">use_update</span><span class="p">:</span>
+                <span class="c1"># If the new step is using `update`, it's important to instantiate</span>
+                <span class="c1"># the model with data for completed trials only, so later we can</span>
+                <span class="c1"># update it with data for new trials as they become completed.</span>
+                <span class="c1"># `experiment.fetch_data` can fetch all available data, including</span>
+                <span class="c1"># for non-completed trials (depending on how the experiment's metrics</span>
+                <span class="c1"># implement `fetch_experiment_data`). We avoid fetching data for</span>
+                <span class="c1"># trials with statuses other than `COMPLETED`, by fetching specifically</span>
+                <span class="c1"># for `COMPLETED` trials.</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">fetch_trials_data</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">trial_indices_by_status</span><span class="p">[</span><span class="n">TrialStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">fetch_data</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_curr</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">Models</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_current_model_from_models_enum</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">model_kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -538,6 +552,8 @@ src="/js/documentation_options.js">
                 <span class="n">df</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">trial_index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">newly_completed_trials</span><span class="p">)]</span>
             <span class="p">)</span>
         <span class="c1"># We definitely have non-empty new data by now.</span>
+        <span class="n">trial_indices_in_new_data</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">new_data</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s2">"trial_index"</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Updating model with data for trials: </span><span class="si">{</span><span class="n">trial_indices_in_new_data</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">not_none</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span> <span class="n">new_data</span><span class="o">=</span><span class="n">new_data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_current_model_from_models_enum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

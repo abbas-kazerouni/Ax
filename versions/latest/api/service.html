@@ -83,6 +83,19 @@ encountered while saving to DB or loading from it.</p></li>
 </dd>
 </dl>
 <dl class="method">
+<dt id="ax.service.ax_client.AxClient.abandon_trial">
+<code class="sig-name descname">abandon_trial</code><span class="sig-paren">(</span><em class="sig-param">trial_index</em>, <em class="sig-param">reason=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ax/service/ax_client.html#AxClient.abandon_trial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ax.service.ax_client.AxClient.abandon_trial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abandons a trial and adds optional metadata to it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>trial_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Index of trial within the experiment.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="method">
 <dt id="ax.service.ax_client.AxClient.attach_trial">
 <code class="sig-name descname">attach_trial</code><span class="sig-paren">(</span><em class="sig-param">parameters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ax/service/ax_client.html#AxClient.attach_trial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ax.service.ax_client.AxClient.attach_trial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach a new trial with the given parameterization to the experiment.</p>

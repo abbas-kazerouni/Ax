@@ -317,6 +317,15 @@ src="/js/documentation_options.js">
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">not_none</span><span class="p">(</span><span class="n">trial</span><span class="o">.</span><span class="n">arm</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">trial</span><span class="o">.</span><span class="n">index</span></div>
 
+<div class="viewcode-block" id="AxClient.abandon_trial"><a class="viewcode-back" href="../../../service.html#ax.service.ax_client.AxClient.abandon_trial">[docs]</a>    <span class="k">def</span> <span class="nf">abandon_trial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">"""Abandons a trial and adds optional metadata to it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            trial_index: Index of trial within the experiment.</span>
+<span class="sd">        """</span>
+        <span class="n">trial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_trial</span><span class="p">(</span><span class="n">trial_index</span><span class="o">=</span><span class="n">trial_index</span><span class="p">)</span>
+        <span class="n">trial</span><span class="o">.</span><span class="n">mark_abandoned</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="AxClient.complete_trial"><a class="viewcode-back" href="../../../service.html#ax.service.ax_client.AxClient.complete_trial">[docs]</a>    <span class="k">def</span> <span class="nf">complete_trial</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">trial_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
